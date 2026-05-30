@@ -53,6 +53,13 @@ echo "Passed: $PASS_COUNT (${PASS_PERCENT}%)"
 echo "Failed: $FAIL_COUNT (${FAIL_PERCENT}%)"
 echo "Skipped: $SKIP_COUNT (${SKIP_PERCENT}%)"
 
+
+if [ $FAIL_COUNT -gt 0 ]; then
+echo "---Failed Tests---"
+FAILED_TESTS=$(grep "TEST FAIL:" "$LOGFILE" | awk '{print $5}' | nl -w2 -s". ")
+echo "$FAILED_TESTS"
+fi
+
 if [ $FAIL_COUNT -gt 0 ]; then
 echo "---Verdict: FAIL---";
 exit 1
