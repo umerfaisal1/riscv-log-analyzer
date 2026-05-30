@@ -16,6 +16,11 @@ Options:
 
 }
 
+if [[ "${1:-}" == "--help" ]]; then
+    print_help
+    exit 0
+fi
+
 if [ $# -lt 1 ]; then
 echo "Usage: $0 <logfile>"
 exit 1
