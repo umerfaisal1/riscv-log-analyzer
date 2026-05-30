@@ -54,13 +54,56 @@ echo "Failed: $FAIL_COUNT (${FAIL_PERCENT}%)"
 echo "Skipped: $SKIP_COUNT (${SKIP_PERCENT}%)"
 
 
-if [ $FAIL_COUNT -gt 0 ]; then
+if [ "$FAIL_COUNT" -gt 0 ]; then
 echo "---Failed Tests---"
 FAILED_TESTS=$(grep "TEST FAIL:" "$LOGFILE" | awk '{print $5}' | nl -w2 -s". ")
 echo "$FAILED_TESTS"
 fi
 
-if [ $FAIL_COUNT -gt 0 ]; then
+# Extract execution times (only PASS and FAIL lines)
+mapfile -t TIMES < <(
+grep -E "TEST (PASS|FAIL):" "$LOGFILE" \
+| grep -oE '[0-9]+\.[0-9]+s' \
+| tr -d 's'
+)
+
+if [ ${#TIMES[@]} -eq 0 ]; then
+    MIN_TIME=0
+    MAX_TIME=0
+    AVG_TIME=0
+else
+
+    MIN_TIME=${TIMES[0]}
+    MAX_TIME=${TIMES[0]}
+    SUM=0
+
+
+    for t in "${TIMES[@]}"; do
+        # compare min
+        if (( $(echo "$t < $MIN_TIME" | bc -l) )); then
+            MIN_TIME=$t
+        fi
+
+        # compare max
+        if (( $(echo "$t > $MAX_TIME" | bc -l) )); then
+            MAX_TIME=$t
+        fi
+
+        # sum
+        SUM=$(echo "$SUM + $t" | bc)
+    done
+
+        AVG_TIME=$(echo "scale=2; $SUM / ${#TIMES[@]}" | bc)
+
+fi
+
+echo "--- Timing Statistics ---"
+echo "Min time: ${MIN_TIME}s"
+echo "Max time: ${MAX_TIME}s"
+echo "Avg time: ${AVG_TIME}s"
+
+
+if [ "$FAIL_COUNT" -gt 0 ]; then
 echo "---Verdict: FAIL---";
 exit 1
 fi
