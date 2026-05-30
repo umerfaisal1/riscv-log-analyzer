@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-TOOLS=(bash grep awk sed bc)
+TOOLS=(bash grep awk bc)
 
 for tool in "${TOOLS[@]}"; do
 
