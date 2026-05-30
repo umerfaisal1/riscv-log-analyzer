@@ -98,9 +98,9 @@ else
 fi
 
 echo "--- Timing Statistics ---"
-echo "Min time: ${MIN_TIME}s"
-echo "Max time: ${MAX_TIME}s"
-echo "Avg time: ${AVG_TIME}s"
+echo "MIN TIME: ${MIN_TIME}s"
+echo "MAX TIME: ${MAX_TIME}s"
+echo "AVG TIME: ${AVG_TIME}s"
 
 
 if [ "$FAIL_COUNT" -gt 0 ]; then
